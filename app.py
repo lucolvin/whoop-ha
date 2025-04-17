@@ -13,6 +13,7 @@ import sqlite3
 from functools import wraps
 import secrets
 import base64
+from security import safe_requests
 
 # Load environment variables
 load_dotenv(os.path.join(os.getenv('CONFIG_DIR', './config'), '.env'))
@@ -350,7 +351,7 @@ def get_user_profile(access_token):
         headers = {'Authorization': f"Bearer {access_token}"}
         
         # Get user profile
-        response = requests.get(
+        response = safe_requests.get(
             f"{WHOOP_API_BASE}/user/profile/basic",
             headers=headers
         )
@@ -431,7 +432,7 @@ def get_current_cycle(headers):
             'limit': 1,  # Get only the latest cycle
             'end': datetime.now(timezone.utc).isoformat()  # Up to current time
         }
-        response = requests.get(
+        response = safe_requests.get(
             f"{WHOOP_API_BASE}/cycle",
             headers=headers,
             params=params
@@ -446,7 +447,7 @@ def get_current_cycle(headers):
 def get_recovery_for_cycle(cycle_id, headers):
     """Get recovery data for a specific cycle"""
     try:
-        response = requests.get(
+        response = safe_requests.get(
             f"{WHOOP_API_BASE}/cycle/{cycle_id}/recovery",
             headers=headers
         )
@@ -466,7 +467,7 @@ def get_sleep_for_cycle(cycle_id, headers):
             'limit': 1,
             'end': datetime.now(timezone.utc).isoformat()
         }
-        response = requests.get(
+        response = safe_requests.get(
             f"{WHOOP_API_BASE}/activity/sleep",
             headers=headers,
             params=params
@@ -478,7 +479,7 @@ def get_sleep_for_cycle(cycle_id, headers):
             
         # Get detailed sleep data
         sleep_id = sleeps[0]['id']
-        sleep_response = requests.get(
+        sleep_response = safe_requests.get(
             f"{WHOOP_API_BASE}/activity/sleep/{sleep_id}",
             headers=headers
         )
@@ -496,7 +497,7 @@ def get_workout_for_cycle(cycle_id, headers):
             'limit': 1,
             'end': datetime.now(timezone.utc).isoformat()
         }
-        response = requests.get(
+        response = safe_requests.get(
             f"{WHOOP_API_BASE}/activity/workout",
             headers=headers,
             params=params
@@ -508,7 +509,7 @@ def get_workout_for_cycle(cycle_id, headers):
             
         # Get detailed workout data
         workout_id = workouts[0]['id']
-        workout_response = requests.get(
+        workout_response = safe_requests.get(
             f"{WHOOP_API_BASE}/activity/workout/{workout_id}",
             headers=headers
         )
