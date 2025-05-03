@@ -352,8 +352,8 @@ def get_user_profile(access_token):
         # Get user profile
         response = requests.get(
             f"{WHOOP_API_BASE}/user/profile/basic",
-            headers=headers
-        )
+            headers=headers, 
+        timeout=60)
         response.raise_for_status()
         user_data = response.json()
         
@@ -390,7 +390,7 @@ def login():
 
     try:
         # Get token
-        response = requests.post(WHOOP_TOKEN_URL, data=token_data)
+        response = requests.post(WHOOP_TOKEN_URL, data=token_data, timeout=60)
         response.raise_for_status()
         token_info = response.json()
         
@@ -434,8 +434,8 @@ def get_current_cycle(headers):
         response = requests.get(
             f"{WHOOP_API_BASE}/cycle",
             headers=headers,
-            params=params
-        )
+            params=params, 
+        timeout=60)
         response.raise_for_status()
         cycles = response.json().get('records', [])
         return cycles[0] if cycles else None
@@ -448,8 +448,8 @@ def get_recovery_for_cycle(cycle_id, headers):
     try:
         response = requests.get(
             f"{WHOOP_API_BASE}/cycle/{cycle_id}/recovery",
-            headers=headers
-        )
+            headers=headers, 
+        timeout=60)
         if response.status_code == 404:
             return None
         response.raise_for_status()
@@ -469,8 +469,8 @@ def get_sleep_for_cycle(cycle_id, headers):
         response = requests.get(
             f"{WHOOP_API_BASE}/activity/sleep",
             headers=headers,
-            params=params
-        )
+            params=params, 
+        timeout=60)
         response.raise_for_status()
         sleeps = response.json().get('records', [])
         if not sleeps:
@@ -480,8 +480,8 @@ def get_sleep_for_cycle(cycle_id, headers):
         sleep_id = sleeps[0]['id']
         sleep_response = requests.get(
             f"{WHOOP_API_BASE}/activity/sleep/{sleep_id}",
-            headers=headers
-        )
+            headers=headers, 
+        timeout=60)
         sleep_response.raise_for_status()
         return sleep_response.json()
     except Exception as e:
@@ -499,8 +499,8 @@ def get_workout_for_cycle(cycle_id, headers):
         response = requests.get(
             f"{WHOOP_API_BASE}/activity/workout",
             headers=headers,
-            params=params
-        )
+            params=params, 
+        timeout=60)
         response.raise_for_status()
         workouts = response.json().get('records', [])
         if not workouts:
@@ -510,8 +510,8 @@ def get_workout_for_cycle(cycle_id, headers):
         workout_id = workouts[0]['id']
         workout_response = requests.get(
             f"{WHOOP_API_BASE}/activity/workout/{workout_id}",
-            headers=headers
-        )
+            headers=headers, 
+        timeout=60)
         workout_response.raise_for_status()
         return workout_response.json()
     except Exception as e:
@@ -536,7 +536,7 @@ def refresh_token(whoop_id):
                 'grant_type': 'refresh_token'
             }
 
-            response = requests.post(WHOOP_TOKEN_URL, data=token_data)
+            response = requests.post(WHOOP_TOKEN_URL, data=token_data, timeout=60)
             response.raise_for_status()
             token_info = response.json()
 
